@@ -1,0 +1,218 @@
+<ul class="nav nav-tabs" style="margin-bottom: 20px;">
+  <li role="presentation" data-tabindex="1" ng-class="{'active': tabindex == 1}" ng-click="tabindex=1;tabSwitch(this)"><a href="javascript:;">所有任务</a></li>
+  <li role="presentation" data-tabindex="2" ng-class="{'active': tabindex == 2}" ng-click="tabindex=2;tabSwitch(this)"><a href="javascript:;">我的任务</a></li>
+  <form class="form-inline pull-right" ng-show="tabindex==1">
+    <div class="form-group">
+      <label>版本</label>
+      <select id="version-select" class="form-control" ng-model="versionId" ng-change="changeVersionId()">
+        <option value="{{version.id}}" ng-repeat="version in versionList">{{version.project.name}}->{{version.name}}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>迭代</label>
+      <select id="iteration-select" class="form-control" ng-model="iterationId" ng-change="changeIterationId()">
+        <option value="{{iteration.id}}" ng-repeat="iteration in iterationList">{{iteration.name}}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>故事</label>
+      <select class="form-control" ng-model="storyId" ng-change="changeStoryId()">
+        <option value="all">全部</option>
+        <option value="{{story.id}}" ng-repeat="story in storyList">{{story.title}}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>关键字</label>
+      <input type="text" class="form-control" ng-model="keyword" ng-change="keywordChange()" placeholder="任务描述/故事/开发人员">
+    </div>
+    <button class="btn btn-primary btn-sm" ng-click="addTask()">新增</button>
+    <button class="btn btn-primary btn-sm" ng-click="importFile()">导入</button>
+  </form>
+</ul>
+<div class="task-wrapper row">
+  <div class="task-status-item-wrapper col-xs-1" ng-repeat="status in taskList" style="width: {{100 / taskList.length}}%">
+    <div class="task-status-item" data-task-status-id="{{status.status_id}}">
+      <div class="task-status-header">
+        <span class="task-status-name">{{status.status_name}}</span><span class="pull-right">任务总数：<span class="badge">{{status.tasks.length}}</span> 任务时数：<span class="badge">{{status.total_time}}</span></span>
+      </div>
+      <div class="task-item-wrapper">
+        <div class="task-item" data-task-id="{{task.id}}" ng-repeat="task in status.tasks">
+          <div class="task-item-desc" ng-bind-html="task.desc_html"></div>
+          <div class="task-item-project text-ellipsis" ng-if="tabindex==2">{{task.project.name}}->{{task.version.name}}</div>
+          <div class="task-item-story">
+            <div class="task-item-story-content text-ellipsis" title="故事：{{task.story.title}}">{{task.story.title}}</div>
+            <div class="task-dependency" ng-if="tabindex==1">
+              <span class="glyphicon glyphicon-circle-arrow-left pull-right" ng-click="showPrevTask(task.id, task.prev_task_ids)" ng-if="task.prev_task_ids" title="显示前置任务" style="cursor: pointer;"></span>
+            </div>
+          </div>
+          <div class="task-item-time" ng-if="task.start_time">{{task.start_time * 1000 | date:"yyyy/MM/dd HH:mm"}}</div>
+          <div class="task-item-info text-right">
+            <!--<span class="glyphicon glyphicon-time task-icon text-primary" aria-hidden="true" ng-if="task.deadline" title="截止日期：{{task.deadline * 1000 | date:'yyyy-MM-dd'}}"></span>-->
+            <span class="glyphicon glyphicon-tag task-icon text-primary" aria-hidden="true" ng-if="task.remark" title="{{task.remark}}"></span>
+            <span class="glyphicon glyphicon-heart task-icon text-primary" aria-hidden="true" ng-if="task.is_concerned" title="已关注"></span>
+            <span class="glyphicon glyphicon-random task-icon text-primary" aria-hidden="true" ng-if="task.is_new" title="插单"></span>
+            <span class="glyphicon glyphicon-flag task-icon text-primary" aria-hidden="true" ng-if="task.is_challenging" title="挑战"></span>
+            <!--<span class="badge badge-primary" title="优先级">{{task.priority}}</span>-->
+            <!--<span class="label label-primary" title="优先级">{{task.priority}}</span>-->
+            <span class="label label-primary" title="估时">{{task.estimated_time}}H</span>
+            <span class="label" ng-class="{'label-primary': !task.is_mine, 'label-success': task.is_mine}" title="开发人员">{{task.user.name}}</span>
+          </div>
+          <div class="task-item-opt">
+            <span class="glyphicon glyphicon-tag" aria-hidden="true" ng-click="addRemark(task.id)" title="备注"></span>
+            <span class="glyphicon glyphicon-heart" aria-hidden="true" ng-click="watchTask(task.id, task.is_concerned)" title="关注"></span>
+            <!--<span class="glyphicon glyphicon-copy" aria-hidden="true" ng-click="copyTask(task.id)" title="复制"></span>-->
+            <span class="glyphicon glyphicon-edit" aria-hidden="true" ng-click="editTask(task.id)" title="编辑"></span>
+            <span class="glyphicon glyphicon-remove" aria-hidden="true" ng-click="deleteTask(task.id)" title="删除"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="task-form" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{{action == '1' ? '新增' : '修改'}}任务</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" name="myForm">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">开发人员 <span style="color: red;">*</span></label>
+            <div class="col-sm-10">
+              <select class="form-control" ng-model="taskData.user_id" required>
+                <option value="{{user.id}}" ng-repeat="user in userList">{{user.name}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">估时 <span style="color: red;">*</span></label>
+            <div class="col-sm-10">
+              <input type="number" class="form-control" ng-model="taskData.estimated_time" placeholder="单位小时" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">迭代 <span style="color: red;">*</span></label>
+            <div class="col-sm-10">
+              <select class="form-control" ng-model="taskData.iteration_id" required>
+                <option value="{{iteration.id}}" ng-repeat="iteration in iterationList">{{iteration.name}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">用户故事 <span style="color: red;">*</span></label>
+            <div class="col-sm-10">
+              <select class="form-control" ng-model="taskData.story_id" ng-change="selectStory()" required>
+                <option value="{{story.id}}" ng-repeat="story in storyList">{{story.title}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">前置任务</label>
+            <div class="col-sm-10 pre-task-container">
+              <div class="alert alert-info alert-dismissible" role="alert" ng-repeat="task in taskData.task_follows">
+                <button type="button" class="close" aria-label="Close" ng-click="deletePrevTask($index)"><span aria-hidden="true">&times;</span></button>
+                {{task.desc}}
+              </div>
+              <div class="task-selector-container" id="task-selector-container">
+                <input type="text" class="form-control" ng-model="taskKeyword" ng-change="taskKeywordChange()" ng-focus="showTaskSelector=1" ng-blur="taskSelectorBlur($event)" placeholder="请输入任务描述关键字" style="margin-left: 1px;">
+                <div class="list-group" ng-show="showTaskSelector">
+                  <a href="javascript:;" class="list-group-item" ng-repeat="task in taskListSelector" ng-click="selectPrevTask(task.id, task.desc)">
+                    <span class="label pull-right" ng-class="{'label-primary': !task.is_mine, 'label-success': task.is_mine}" title="开发人员">{{task.user.name}}</span>
+                    {{task.desc}}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">任务描述 <span style="color: red;">*</span></label>
+            <div class="col-sm-10">
+              <textarea rows="4" class="form-control" ng-model="taskData.desc" style="resize: none;" required></textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">优先级 <span style="color: red;">*</span></label>
+            <div class="col-sm-10">
+              <select class="form-control" ng-model="taskData.priority" required>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">截止日期</label>
+            <div class="col-sm-10">
+              <input type="text" id="deadline" class="form-control" ng-model="taskData.deadline">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label"></label>
+            <div class="col-sm-10">
+              <label class="checkbox-inline">
+                <input type="checkbox" ng-model="taskData.is_new"> 插单
+              </label>
+              <label class="checkbox-inline">
+                <input type="checkbox" ng-model="taskData.is_challenging"> 挑战
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" ng-disabled="myForm.$invalid" ng-click="saveAndCopy()">保存并复制</button>
+        <button type="button" class="btn btn-primary" ng-disabled="myForm.$invalid" ng-click="saveAndAdd()">保存并新增</button>
+        <button type="button" class="btn btn-primary" ng-disabled="myForm.$invalid" ng-click="save()">保存</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div id="import-form" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">导入</h4>
+      </div>
+      <div class="modal-body">
+        <a href="template/import-template.csv" style="display: block;margin-bottom: 15px;">下载导入模板</a>
+        <div class="upload-btn-wrapper">
+          <a href="javascript:void(0)" class="btn btn-primary">
+            <span>选择导入文件</span>
+            <div class="input-file-wrapper">
+              <input type="file" id="upfile" hidefocus="true" accept="text/csv">
+            </div>
+          </a>
+          <span class="upload-desc">只支持CSV格式</span>
+        </div>
+        <span style="color: #808080;font-size: 12px;margin-bottom: 5px;display: inline-block;">导入结果：</span>
+        <textarea rows="10" ng-model="importResult" style="width: 100%;resize: none;"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div id="remark-form" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">备注</h4>
+      </div>
+      <div class="modal-body">
+        <textarea rows="10" style="width: 100%;resize: none;" ng-model="taskData.remark"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" ng-click="save()">保存</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,94 @@
+<div class="page-header">
+  <strong class="page-header-title">迭代</strong>
+  <button class="btn btn-primary btn-sm pull-right" style="margin-top: -6px;" ng-click="addIteration()">新增</button>
+  <div class="checkbox pull-right" style="margin-top: 0;margin-right: 10px">
+    <label>
+      <input type="checkbox" value="" ng-model="status">
+      查看已关闭迭代
+    </label>
+  </div>
+</div>
+<div id="iteration-container" class="iteration-container">
+  <table class="table table-hover table-project" ng-repeat="project in iterationList">
+    <thead>
+    <tr>
+      <th class="col-xs-4"><span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>&nbsp;&nbsp;{{project.name}}</th>
+      <th class="col-xs-4"></th>
+      <th class="col-xs-4"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="version in project.versions">
+      <td colspan="3">
+        <table class="table table-hover table-version">
+          <thead>
+            <tr>
+              <th class="col-xs-4">&nbsp;&nbsp;<span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>&nbsp;&nbsp;{{version.name}}</th>
+              <th class="col-xs-4">时间周期</th>
+              <th class="col-xs-4 text-center">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="iteration in version.iterations" ng-if="iteration.status == status">
+              <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{iteration.name}}</td>
+              <td>{{iteration.start_time * 1000 | date:"yyyy/MM/dd"}} - {{iteration.end_time * 1000 | date:"yyyy/MM/dd"}}</td>
+              <td class="text-center">
+                <div class="btn-group btn-group-sm">
+                  <button class="btn btn-primary" ng-click="editIteration(iteration.id)">修改</button>
+                  <button class="btn btn-primary" ng-click="deleteIteration(iteration.id)">删除</button>
+                  <button class="btn btn-primary" ng-click="closeIteration(iteration.id)" ng-if="!iteration.status">关闭</button>
+                  <button class="btn btn-primary" ng-click="openIteration(iteration.id)" ng-if="iteration.status">开启</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div id="iteration-form" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{{action == '1' ? '新增' : '修改'}}迭代</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" name="myForm">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">迭代名称 <span style="color: red;">*</span></label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" ng-model="iterationData.name" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">所属版本 <span style="color: red;">*</span></label>
+            <div class="col-sm-10">
+              <select class="form-control" ng-model="iterationData.version_id" required>
+                <option value="{{version.id}}" ng-repeat="version in versionList">{{version.project.name}}->{{version.name}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">开始时间 <span style="color: red;">*</span></label>
+            <div class="col-sm-10">
+              <input type="date" class="form-control" ng-model="iterationData.start_time" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">结束时间 <span style="color: red;">*</span></label>
+            <div class="col-sm-10">
+              <input type="date" class="form-control" ng-model="iterationData.end_time" required>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" ng-disabled="myForm.$invalid" ng-click="save()">保存</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

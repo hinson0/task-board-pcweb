@@ -1,0 +1,358 @@
+/* app css stylesheet */
+
+/* 覆盖bootstrap样式 */
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+  vertical-align: middle;
+}
+
+table {
+  table-layout: fixed;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+table td .label, .modal-dialog .label {
+  display: inline-block;
+  margin-right: 3px;
+}
+
+/* 公共样式 */
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.page-header {
+  margin-top: 0;
+}
+
+.page-header-title {
+  color: #777;
+}
+
+.upload-btn-wrapper {
+  margin-bottom: 5px;
+  position: relative;
+  /*display: inline-block;*/
+}
+
+.upload-btn-wrapper .input-file-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 110px;
+  overflow: hidden;
+  height: 34px;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  z-index: 12;
+}
+
+.upload-btn-wrapper .input-file-wrapper input[type=file] {
+  display: block;
+  position: absolute;
+  top: -122px;
+  left: 0;
+  cursor: pointer;
+  z-index: 14;
+  font-size: 100px;
+  width: 110px;
+  height: 500px;
+}
+
+.upload-btn-wrapper .upload-desc {
+  color: gray;
+  font-size: 12px;
+}
+
+.task-id-display {
+  color: #808080;
+  font-size: 12px;
+}
+
+.deadline-display {
+  color: red;
+  font-size: 12px;
+}
+
+/* 我的任务页面 */
+.task-icon {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.badge-primary {
+  background-color: #337ab7;
+}
+
+.task-status-item-wrapper.col-xs-1 {
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+.task-status-item-wrapper.col-xs-1:first-child {
+  padding-left: 15px;
+}
+
+.task-status-item-wrapper.col-xs-1:last-child {
+  padding-right: 15px;
+}
+
+.task-status-item {
+  background-color: #E2E4E6;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.task-status-header {
+  margin-bottom: 5px;
+}
+
+.task-status-name {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.task-item-wrapper {
+  min-height: 30px;
+}
+
+.task-item {
+  position: relative;
+  display: inline-block;
+  width: 186px;
+  background-color: #fff;
+  padding: 5px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.task-item-placeholder {
+  display: inline-block;
+  width: 186px;
+  height: 120px;
+  border: 1px dotted #337AB7;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.task-item-prev {
+  border: 3px solid red;
+}
+
+.task-item-desc {
+  height: 80px;
+  overflow: hidden;
+}
+
+.task-item-project {
+  font-size: 12px;
+  color: #777;
+  padding: 3px 0;
+  border-top: 1px dashed #ddd;
+}
+
+.task-item-story {
+  position: relative;
+  border-top: 1px dashed #ddd;
+  border-bottom: 1px dashed #ddd;
+  padding: 3px 0;
+  margin-bottom: 3px;
+}
+
+.task-item-story-content {
+  font-size: 12px;
+  color: #777;
+  width: 150px;
+}
+
+.task-item-time {
+  font-size: 12px;
+  color: #777;
+  border-bottom: 1px dashed #ddd;
+  padding: 0 0 3px 0;
+  margin-bottom: 3px;
+}
+
+.task-dependency {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 20px;
+  color: #337ab7;
+}
+
+.task-item-info {
+  height: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  padding-right: 2px;
+}
+
+.task-item-opt {
+  position: absolute;
+  top: -36px;
+  left: 0;
+  background-color: rgba(0,0,0,.5);
+  width: 100%;
+  padding: 5px;
+  color: #fff;
+  font-size: 18px;
+  text-align: right;
+  border-radius: 5px 5px 0 0;
+  -webkit-transition: top .1s linear;
+          transition: top .1s linear;
+}
+
+.task-item-opt .glyphicon {
+  cursor: pointer;
+  margin-right: 2px;
+}
+
+.task-item-opt .glyphicon:hover {
+  opacity: .8;
+  -webkit-transform: scale(1.1);
+          transform: scale(1.1);
+}
+
+.task-item:hover .task-item-opt {
+  top: 0;
+}
+
+.task-item-sorting {
+  transform: rotate(3deg);
+  -webkit-transform: rotate(3deg);
+}
+
+.pre-task-container .list-group {
+  max-height: 205px;
+  overflow: auto;
+}
+
+.pre-task-container .alert {
+  padding: 7px 35px 7px 7px;
+  margin-bottom: 7px;
+}
+
+.task-selector-container {
+  position: relative;
+  margin-left: -1px;
+}
+
+.task-selector-container .list-group {
+  border-bottom: 1px solid #ddd;
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+}
+
+.task-selector-container .list-group-item {
+  margin-left: 1px;
+}
+
+.task-selector-container .list-group-item:first-child {
+  border-top: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.task-selector-container .list-group-item:last-child {
+  border-bottom: none;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* 故事进度页面 */
+.story-progress table {
+  margin-bottom: 0;
+}
+
+.story-progress table thead {
+  background-color: #f8f8f8;
+  cursor: pointer;
+}
+
+.story-progress table thead th {
+  /*border: none;*/
+}
+
+/* 迭代设置 */
+
+.iteration-container .table-project {
+  border: 1px solid #ddd;
+}
+
+.iteration-container .table-project > thead > tr > th, .iteration-container .table-version > thead > tr > th {
+   border-bottom: 1px solid #ddd;
+}
+
+.iteration-container table {
+  margin-bottom: 0;
+}
+
+.iteration-container .table-project td {
+  padding: 0;
+}
+
+.iteration-container .table-version td {
+  padding: 8px;
+}
+
+.iteration-container .table-project thead, .iteration-container.table-version thead {
+  cursor: pointer;
+}
+
+.iteration-container .table-project > thead {
+  background-color: #f8f8f8;
+}
+
+/* 版本设置页面 */
+
+#version-form .label {
+  display: inline-block;
+  margin-right: 3px;
+}
+
+#version-form .label .close {
+  font-size: 12px;
+  color: #fff;
+  font-weight: normal;
+  opacity: .5;
+}
+
+#version-form .label .close:hover {
+  opacity: .8;
+}
+
+.version-container .table-project {
+  margin-bottom: 0;
+}
+
+.version-container .table-project thead {
+  background-color: #f8f8f8;
+  cursor: pointer;
+}
+
+/* 消息中心 */
+.message-center-container .popover-content {
+  padding: 0;
+}
+
+.message-center-container .list-group {
+  margin-bottom: 0;
+  /*max-height: 205px;*/
+  max-height: 242px;
+  overflow: auto;
+}
+
+.message-center-container .list-group-item {
+  border-left: none;
+  border-right: none;
+}
+
+.message-center-container .list-group-item:last-child {
+  border-bottom: none;
+}

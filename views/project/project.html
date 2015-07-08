@@ -1,0 +1,57 @@
+<div class="page-header">
+  <strong class="page-header-title">项目</strong>
+  <button class="btn btn-primary btn-sm pull-right" style="margin-top: -6px;" ng-click="addProject()">新增</button>
+</div>
+<table class="table table-bordered table-hover">
+  <thead>
+  <tr>
+    <th class="col-xs-4">项目名称</th>
+    <th class="col-xs-4">项目负责人</th>
+    <th class="col-xs-4 text-center">操作</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="project in projectList">
+    <td>{{project.name}}</td>
+    <td>{{getUserName(project.leader)}}</td>
+    <td class="text-center">
+      <div class="btn-group btn-group-sm">
+        <button class="btn btn-primary" ng-click="editProject(project.id, $index)">修改</button>
+        <button class="btn btn-primary" ng-click="deleteProject(project.id)">删除</button>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<div id="project-form" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{{action == '1' ? '新增' : '修改'}}项目</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" name="myForm">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">项目名称 <span style="color: red;">*</span></label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" ng-model="projectData.name" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">负责人 <span style="color: red;">*</span></label>
+            <div class="col-sm-10">
+              <select class="form-control" ng-model="projectData.leader" required>
+                <option value="{{user.id}}" ng-repeat="user in userList">{{user.name}}</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" ng-disabled="myForm.$invalid" ng-click="save()">保存</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

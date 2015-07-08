@@ -1,0 +1,71 @@
+<div class="page-header">
+  <strong class="page-header-title">工时统计</strong>
+  <form class="form-inline pull-right" style="margin-top: -10px;">
+    <div class="form-group">
+      <label>版本</label>
+      <select id="version-select" class="form-control" ng-model="versionId">
+        <option value="{{allTag}}">全部</option>
+        <option value="{{version.id}}" ng-repeat="version in versionList">{{version.project.name}}->{{version.name}}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>迭代</label>
+      <select id="iteration-select" class="form-control" ng-model="iterationId" ng-change="iterationChange()">
+        <option value="{{allTag}}">全部</option>
+        <option value="{{iteration.id}}" ng-repeat="iteration in iterationList">{{iteration.name}}</option>
+      </select>
+    </div>
+    <button class="btn btn-primary btn-sm" ng-click="searchByTime()">按时间段查询</button>
+  </form>
+</div>
+<div style="margin-bottom: 5px;color:grey;" ng-if="showTime">
+  查询时间段：{{start_time | date:"yyyy/MM/dd"}} - {{end_time | date:"yyyy/MM/dd"}}
+</div>
+<table class="table table-bordered table-hover">
+  <thead>
+  <tr>
+    <th class="col-xs-3">人员名称</th>
+    <th class="col-xs-3">工时统计</th>
+    <th class="col-xs-3">已完成</th>
+    <th class="col-xs-3">进度</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="stat in statistics">
+    <td>{{stat.name}}</td>
+    <td>{{stat.total}}</td>
+    <td>{{stat.done}}</td>
+    <td>{{stat.done / stat.total * 100 | number:0}}%</td>
+  </tr>
+  </tbody>
+</table>
+<div id="search-form" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">按时间段查询</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" name="myForm">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">开始时间 <span style="color: red;">*</span></label>
+            <div class="col-sm-10">
+              <input type="date" class="form-control" ng-model="start_time" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">结束时间 <span style="color: red;">*</span></label>
+            <div class="col-sm-10">
+              <input type="date" class="form-control" ng-model="end_time" required>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" ng-disabled="myForm.$invalid" ng-click="search()">查询</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+<div class="page-header">
+  <strong class="page-header-title">故事进度</strong>
+  <form class="form-inline pull-right" style="margin-top: -10px;">
+    <div class="form-group">
+      <label>版本</label>
+      <select id="version-select" class="form-control" ng-model="versionId">
+        <option value="{{version.id}}" ng-repeat="version in versionList">{{version.project.name}}->{{version.name}}</option>
+      </select>
+    </div>
+  </form>
+</div>
+<div id="story-progress" class="story-progress">
+  <table class="table table-bordered table-hover" ng-repeat="story in progressList">
+    <thead>
+    <tr>
+      <th class="col-xs-4"><span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>&nbsp;&nbsp;{{story.project_name}}</th>
+      <th class="col-xs-4">{{story.version_name}}</th>
+      <th class="col-xs-2">{{story.title}}</th>
+      <th class="col-xs-2">{{story.status_name}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="task in story.tasks">
+      <td>{{task.desc}}</td>
+      <td ng-style="task.prev_tasks_status == 50 ? {color: 'grey'} : {color: 'red'}">{{task.prev_tasks_desc}}</td>
+      <td>{{task.estimated_time}}</td>
+      <td>{{task.status_name}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
