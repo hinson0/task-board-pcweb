@@ -18,14 +18,11 @@ angular.module('myApp.login', ['ngRoute'])
 
     $scope.signin = function () {
       auth.signin({
-        account: $scope.account,
+        name: $scope.account,
         password: $scope.password,
-        client_key: "0f71ba1d1b654a69e277e2cb77ca7fed",
-        platform_id: 2,
-        "device_id": "root"
       }).then(function(userInfo) {
         // 完善用户资料
-        $http.get(host + 'user/show/' + userInfo.id)
+        $http.get(host + 'user/show/' + userInfo.id + '?sid=' + userInfo.sid)
           .success(function (result) {
             $scope.userData = result;
 

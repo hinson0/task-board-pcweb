@@ -6,11 +6,12 @@ angular.module('myApp.authentication', [])
       signin: function (data) {
         var deferred = $q.defer();
 
-        $http.post(host + "user/login", data)
+        $http.post(host + "user/login2", data)
           .then(function (result) {
             var userInfo = result.data;
 
             $window.localStorage["userId"] = JSON.stringify(userInfo.id);
+            $window.localStorage["sid"] = JSON.stringify(userInfo.sid);
             deferred.resolve(userInfo);
           }, function (error) {
             deferred.reject(error);
