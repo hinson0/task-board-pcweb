@@ -32,6 +32,7 @@ angular.module('myApp.authentication', [])
       },
       logout: function () {
         delete $window.localStorage["userId"];
+        delete $window.localStorage["sid"];
         $location.path('/login');
       }
     };
