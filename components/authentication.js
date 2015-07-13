@@ -11,7 +11,7 @@ angular.module('myApp.authentication', [])
             var userInfo = result.data;
 
             $window.localStorage["userId"] = JSON.stringify(userInfo.id);
-            $window.localStorage["sid"] = JSON.stringify(userInfo.sid);
+            $window.localStorage["sid"] = userInfo.sid;
             deferred.resolve(userInfo);
           }, function (error) {
             deferred.reject(error);
@@ -25,7 +25,7 @@ angular.module('myApp.authentication', [])
         var userId = $window.localStorage["userId"];
 
         // 查询用户列表
-        $http.get(host + 'user/show/' + userId)
+        $http.get(host + 'user/show/' + userId + '?sid=' + $window.localStorage['sid'])
           .success(function (user) {
             $rootScope.$broadcast('username.change', user.name);
           });
